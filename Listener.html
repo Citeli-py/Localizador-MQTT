@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta lang="pt-br" charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="./mqtt_listener.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+    <title>Geração de Sala MQTT</title>
+</head>
+
+<body>
+    <h1>Geração de Sala MQTT</h1>
+    <div class="room">
+        <h2>Código da Sala:</h2>
+        <div class="code" id="roomCode">sala</div>
+        <button onclick="copiarCodigo()">Copiar Código</button>
+    </div>
+    <div class="messages">
+        <h2>Mensagens Recebidas na Sala</h2>
+        <p id="msg"></p>
+    </div>
+    <div class="container">
+        <div id="map" style = "width:600px; height:800px; margin: 50px; padding: 30px;"></div>
+    </div>
+
+    <script>
+        function copiarCodigo() {
+            // Código para copiar o código da sala para a área de transferência
+            var roomCode = document.getElementById("roomCode");
+            var range = document.createRange();
+            range.selectNode(roomCode);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            //alert("Código copiado para a área de transferência: " + roomCode.innerText);
+        }
+
+        function gerarCodigo(){
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let codigo = '';
+            const tamanho = 9;
+
+            for (let i = 0; i < tamanho; i++) {
+                const indice = Math.floor(Math.random() * caracteres.length);
+                codigo += caracteres.charAt(indice);
+            }
+            document.getElementById("roomCode").innerText = codigo;
+
+        }
+
+        gerarCodigo();
+        
+        var roomCode = document.getElementById("roomCode").textContent;
+        conectar(roomCode);
+
+        var mymap = L.map("map").setView([-22.523790, -41.942013], 13);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mymap);
+
+    </script>
+</body>
+</html>

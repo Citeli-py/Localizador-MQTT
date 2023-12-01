@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta lang="pt-br" charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    
+    <!-- Inclua a Biblioteca Paho MQTT -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="./mqtt_client.js"></script>
+
+    <title>Cliente de Sala MQTT</title>
+    <style>
+        .form-container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #4e5861;
+            border-radius: 10px;
+        }
+        input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            background-color: #fff5d6;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 10px;
+        }
+        .message-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cliente de Sala MQTT</h1>
+    <div class="form-container">
+        <h2>Conectar à Sala</h2>
+        <input type="text" id="nomeCliente" placeholder="Seu Nome">
+        <input type="text" id="nomeSala" placeholder="Codigo da Sala">
+        <button onclick="conectar()">Conectar</button>
+    </div>
+
+    <div class="message-container">
+        <h2>Conectado como <span id="textoCliente"></span> na Sala <span id="textoSala"></span></h2>
+        <h2>Enviando localização!</h2>
+    </div> 
+
+    <script>
+        function conectar() {
+            const nomeCliente = document.getElementById("nomeCliente").value;
+            const nomeSala = document.getElementById("nomeSala").value;
+            document.getElementById("textoCliente").textContent = nomeCliente;
+            document.getElementById("textoSala").textContent = nomeSala;
+            document.getElementById("nomeCliente").style.display = "none";
+            document.getElementById("nomeSala").style.display = "none";
+            document.querySelector(".form-container button").style.display = "none";
+            document.querySelector(".message-container").style.display = "block";
+
+            setInfo(nomeCliente, nomeSala);
+            conectarMQTT();
+        }
+
+    </script>
+</body>
+</html>
