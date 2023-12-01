@@ -102,7 +102,7 @@ var lider = null;
 
 var Timer;
 function startTimer() {
-    let timer = 100;
+    let timer = 1000;
     Timer = setInterval(function() {
         if (timer > 0) timer--;
         else {
@@ -118,7 +118,7 @@ function startTimer() {
 
 var Heartbeat;
 function waitLider() {
-    let timer = 500;
+    let timer = 1000;
     console.log("HEARTBEAT")
     Heartbeat = setInterval(function() {
         if (timer > 0) timer--;
