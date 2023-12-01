@@ -3,8 +3,11 @@ class Geo {
         this.latitude = 0;
         this.longitude = 0;
         this.start = false;
+
+        this.gps = null;
     }
 
+    
     updateLocation() {
         if (!('geolocation' in navigator)) {
             console.log(`There is no "geolocation" on this navigator.`);
@@ -15,6 +18,14 @@ class Geo {
             });
         }
     }
+    
+    getLocation() {
+        if (navigator.geolocation) {
+          this.gps = navigator.geolocation.watchPosition(sendLocation);
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      }
 
     startGeolocation() {
         this.start = true;
@@ -28,6 +39,7 @@ class Geo {
 
     stopGeolocation(){
         this.start = false;
+        navigator.geolocation.clearWatch(this.gps);
     }
 
     getCoordenadas() {
@@ -143,7 +155,8 @@ function handleMessage(topic, message) {
                 console.log("Recebido ID:", infos.id);
                 subscribe(topico_cliente);
                 eleicao();
-                geo.startGeolocation()
+                //geo.startGeolocation()
+                geo.getLocation();
             }
         }
     }
@@ -244,10 +257,21 @@ function eleicao(){
     sendClients(`!${infos.id}>eleicao`);
 }
 
+/*
 function sendLocation() {
     if (infos.id !== null){
         geo.updateLocation();
         coordenadas = geo.getCoordenadas();
+        if(lider == infos.id)
+            sendListener(`${infos.id}>${coordenadas}`);
+        else
+            sendClients(`${infos.id}>${coordenadas}`);
+    }
+}*/
+
+function sendLocation(position) {
+    if (infos.id !== null){
+        coordenadas = `${position.coords.latitude},${position.coords.longitude}`
         if(lider == infos.id)
             sendListener(`${infos.id}>${coordenadas}`);
         else
