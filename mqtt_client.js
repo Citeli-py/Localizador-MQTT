@@ -110,14 +110,17 @@ var lider = null;
 
 var Timer;
 function startTimer() {
-    let timer = 100;
+    let timer = 200;
+    console.log("Timer eleicao");
     Timer = setInterval(function() {
         if (timer > 0) timer--;
         else {
-            if(max_id < infos.id) {
+            console.log("Fim do Timer eleicao");
+            if(max_id <= infos.id) {
                 sendClients(`!${infos.id}>VITORIA`);
                 lider = infos.id;
             }
+            max_id = -1;
             clearInterval(Timer);
         }
         
@@ -132,8 +135,8 @@ function waitLider() {
         if (timer > 0) timer--;
         else {
             console.log("LIDER MORREU");
-            clearInterval(Heartbeat);
             eleicao();
+            clearInterval(Heartbeat);
         }
         
     }, 10);
@@ -183,6 +186,7 @@ function handleMessage(topic, message) {
                             clearInterval(Timer);
                             startTimer();
                         }
+                        max_id = -1;
                         break;
                         
                     case "OK!":
