@@ -94,12 +94,10 @@ function handleMessage(topic, message) {
     if(topic === topico) {
         console.log(message);
 
-        let regex_id = /\?([a-z A-z 0-9]+)/;
-        let match = message.match(regex_id);    
-
-        if (match && !message.includes(":")) {
-            publish(topico, `?${match[1]}:${tabelaClientes.lastId}`);
-            tabelaClientes.addCliente(match[1]);
+        if (message[0] === "?" && !message.includes(":")) {
+            nome = message.substring(1);
+            publish(topico, `?${nome}:${tabelaClientes.lastId}`);
+            tabelaClientes.addCliente(nome);
         }
 
         if(message.includes(">")){

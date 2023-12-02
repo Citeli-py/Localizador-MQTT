@@ -21,11 +21,19 @@ class Geo {
     
     getLocation() {
         if (navigator.geolocation) {
-          this.gps = navigator.geolocation.watchPosition(sendLocation);
+          this.gps = navigator.geolocation.watchPosition(sendLocation, this.errorHandler,{enableHighAccuracy: true, timeout: 5000, maximumAge: 0});
         } else {
           alert("Geolocation is not supported by this browser.");
         }
-      }
+    }
+
+    errorHandler(err) {
+        if(err.code == 1) {
+           alert("Error: Access is denied!");
+        } else if( err.code == 2) {
+           alert("Error: Position is unavailable!");
+        }
+     }
 
     startGeolocation() {
         this.start = true;
@@ -102,7 +110,7 @@ var lider = null;
 
 var Timer;
 function startTimer() {
-    let timer = 1000;
+    let timer = 100;
     Timer = setInterval(function() {
         if (timer > 0) timer--;
         else {
@@ -155,8 +163,8 @@ function handleMessage(topic, message) {
                 console.log("Recebido ID:", infos.id);
                 subscribe(topico_cliente);
                 eleicao();
-                //geo.startGeolocation()
-                geo.getLocation();
+                geo.startGeolocation()
+                //geo.getLocation();
             }
         }
     }
@@ -208,6 +216,7 @@ function handleMessage(topic, message) {
             else{
                 msg_list = message.split(">");
                 id = Number(msg_list[0])
+
                 // Verifica se o lider está vivo
                 if(lider === id) {
                     clearInterval(Heartbeat);
@@ -257,18 +266,16 @@ function eleicao(){
     sendClients(`!${infos.id}>eleicao`);
 }
 
-/*
+
 function sendLocation() {
     if (infos.id !== null){
         geo.updateLocation();
         coordenadas = geo.getCoordenadas();
-        if(lider == infos.id)
-            sendListener(`${infos.id}>${coordenadas}`);
-        else
-            sendClients(`${infos.id}>${coordenadas}`);
+        sendClients(`${infos.id}>${coordenadas}`);
     }
-}*/
+}
 
+/*
 function sendLocation(position) {
     if (infos.id !== null){
         coordenadas = `${position.coords.latitude},${position.coords.longitude}`
@@ -277,4 +284,4 @@ function sendLocation(position) {
         else
             sendClients(`${infos.id}>${coordenadas}`);
     }
-}
+}*/
