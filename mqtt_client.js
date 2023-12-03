@@ -3,8 +3,6 @@ class Geo {
         this.latitude = 0;
         this.longitude = 0;
         this.start = false;
-
-        this.gps = null;
     }
 
     
@@ -18,22 +16,6 @@ class Geo {
             });
         }
     }
-    
-    getLocation() {
-        if (navigator.geolocation) {
-          this.gps = navigator.geolocation.watchPosition(sendLocation, this.errorHandler,{enableHighAccuracy: true, timeout: 5000, maximumAge: 0});
-        } else {
-          alert("Geolocation is not supported by this browser.");
-        }
-    }
-
-    errorHandler(err) {
-        if(err.code == 1) {
-           alert("Error: Access is denied!");
-        } else if( err.code == 2) {
-           alert("Error: Position is unavailable!");
-        }
-     }
 
     startGeolocation() {
         this.start = true;
@@ -155,7 +137,7 @@ function waitLider() {
 function handleMessage(topic, message) {
     console.log('Mensagem recebida no topico ' + topic + ': ' + message);
 
-    if (topic === topico_listener) {
+    if (topic === topico_listener) { // Pegar id
         let regex_id = /\?([a-z A-z 0-9]+):(\d+)/;
         let match = message.match(regex_id);    
 
@@ -166,14 +148,14 @@ function handleMessage(topic, message) {
                 console.log("Recebido ID:", infos.id);
                 subscribe(topico_cliente);
                 eleicao();
-                geo.startGeolocation()
+                geo.startGeolocation();
                 //geo.getLocation();
             }
         }
     }
 
     if(topic === topico_cliente) {
-        if(message[0] === "!"){
+        if(message[0] === "!"){ // Mensagens de eleição
             msg_list = message.split(">");
             id = Number(msg_list[0].substring(1))
             
@@ -211,7 +193,7 @@ function handleMessage(topic, message) {
             }
         }
 
-        if(message.includes(">") && message.includes(",")){
+        if(message.includes(">") && message.includes(",")){ //Mensagens de localização
 
             if(lider === infos.id) { // repasse das coordenadas para o listener
                 sendListener(message);
